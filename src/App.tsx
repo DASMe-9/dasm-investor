@@ -97,6 +97,13 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
     const adminRoles = ["admin", "super_admin", "moderator", "employee"];
     const isAdmin = user?.type && adminRoles.includes(user.type);
 
+    // TODO: مؤقت — فيصل الزهراني (ID 11) مسموح لين يتجهّز عقده
+    const tempWhitelist = [11];
+    if (user?.id && tempWhitelist.includes(user.id)) {
+      setStatus("authorized");
+      return;
+    }
+
     if (isAdmin) {
       // الأدمن يدخل دائماً — يقدر يراقب ويشوف
       setStatus("authorized");
