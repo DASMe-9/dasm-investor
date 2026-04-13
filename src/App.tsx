@@ -4,6 +4,7 @@ import { setToken, setUser, verifySSOToken, redirectToSSO, isLoggedIn, clearAuth
 import { fetchSubscriptions } from "./lib/api";
 import Dashboard from "./pages/Dashboard";
 import Portfolio from "./pages/Portfolio";
+import Contract from "./pages/Contract";
 import NotFound from "./pages/NotFound";
 import Layout from "./components/Layout";
 import { ShieldX, LogOut } from "lucide-react";
@@ -150,6 +151,7 @@ export default function App() {
             <Switch>
               <Route path="/" component={Dashboard} />
               <Route path="/portfolio" component={Portfolio} />
+              <Route path="/contract/:id" component={Contract} />
               <Route component={NotFound} />
             </Switch>
           </Layout>
