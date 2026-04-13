@@ -139,6 +139,16 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  // ✅ عند انتهاء صلاحية التوكن (401) — امسح الجلسة وأعد التوجيه لـ SSO
+  useEffect(() => {
+    const handleExpired = () => {
+      clearAuth();
+      redirectToSSO();
+    };
+    window.addEventListener("auth:expired", handleExpired);
+    return () => window.removeEventListener("auth:expired", handleExpired);
+  }, []);
+
   return (
     <Switch>
       <Route path="/auth/callback" component={AuthCallback} />
