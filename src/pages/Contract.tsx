@@ -64,7 +64,7 @@ function ConsentRow({
 export default function Contract() {
   const params = useParams<{ id: string }>();
   const subId = parseInt(params.id ?? "0", 10);
-  const [, navigate] = useLocation();
+  useLocation(); // ensure Wouter context
 
   const [contract, setContract] = useState<ContractData | null>(null);
   const [loading, setLoading] = useState(true);
