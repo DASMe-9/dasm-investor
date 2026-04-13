@@ -89,7 +89,10 @@ export async function fetchSubscriptions(): Promise<any> {
 
 /** ملخص المحفظة الإجمالي */
 export async function fetchPortfolio(): Promise<PortfolioSummary | null> {
-  return request<PortfolioSummary>("/investor/angel-investments/statements/portfolio");
+  // API returns { statement_type, generated_at, portfolio_summary, positions }
+  // Dashboard expects PortfolioSummary fields directly — extract portfolio_summary
+  const res = await request<any>("/investor/angel-investments/statements/portfolio");
+  return (res?.portfolio_summary ?? res) as PortfolioSummary | null;
 }
 
 /** بيان مركز استثماري واحد */

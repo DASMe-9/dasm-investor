@@ -93,30 +93,27 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    // تحقق إن المستخدم عنده اشتراك استثماري أو أدمن
     const user = getUser();
     const adminRoles = ["admin", "super_admin", "moderator", "employee"];
     const isAdmin = user?.type && adminRoles.includes(user.type);
 
-    // TODO: مؤقت — فيصل الزهراني (ID 11) مسموح لين يتجهّز عقده
-    const tempWhitelist = [11];
-    if (user?.id && tempWhitelist.includes(user.id)) {
-      setStatus("authorized");
-      return;
-    }
-
+    // أدمن — دخول مباشر للمراقبة (بدون بيانات استثمارية)
     if (isAdmin) {
-      // الأدمن يدخل دائماً — يقدر يراقب ويشوف
       setStatus("authorized");
       return;
     }
 
-    // المستخدم العادي — لازم عنده اشتراك
-    fetchSubscriptions().then((res) => {
-      const subs = res?.subscriptions?.data ?? res?.data ?? [];
-      const hasSubs = Array.isArray(subs) && subs.length > 0;
+    // مستثمر ملائكي — is_angel_investor flag (أي نوع حساب)
+    if (user?.is_angel_investor) {
+      setStatus("authorized");
+      return;
+    }
 
-      if (hasSubs || res?.portfolio_summary) {
+    // تحقق عبر API — مستخدم عادي قد يملك اشتراك
+    fetchSubscriptions().then((res) => {
+      const hasSubs = (res?.positions?.data ?? []).length > 0;
+      const hasSummary = res?.portfolio_summary?.positions_total_count > 0;
+      if (hasSubs || hasSummary) {
         setStatus("authorized");
       } else {
         setStatus("denied");
