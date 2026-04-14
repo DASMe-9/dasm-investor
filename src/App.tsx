@@ -7,6 +7,7 @@ import Portfolio from "./pages/Portfolio";
 import Contract from "./pages/Contract";
 import EarlySupporter from "./pages/EarlySupporter";
 import EarlySupporterContract from "./pages/EarlySupporterContract";
+import EarlySupporterDashboard from "./pages/EarlySupporterDashboard";
 import NotFound from "./pages/NotFound";
 import Layout from "./components/Layout";
 import { ShieldX, LogOut } from "lucide-react";
@@ -162,6 +163,7 @@ export default function App() {
               <Route path="/portfolio" component={Portfolio} />
               <Route path="/contract/:id" component={Contract} />
               <Route path="/early-supporter" component={EarlySupporter} />
+              <Route path="/early-supporter/:id" component={EarlySupporterDashboard} />
               <Route path="/early-supporter/:id/contract" component={EarlySupporterContract} />
               <Route component={NotFound} />
             </Switch>

@@ -187,6 +187,68 @@ export async function fetchEarlySupporterContract(id: number): Promise<EarlySupp
   return request(`/investor/early-supporter/my-participations/${id}/contract`);
 }
 
+export interface EarlySupporterMetrics {
+  total_paid_in: string;
+  total_distributions_received: string;
+  monthly_commitment: string;
+  cap_amount: string;
+  stage_1_target: string;
+  stage_2_target: string;
+  stage_3_target: string;
+  current_stage: 1 | 2 | 3;
+  current_rate_pct: 100 | 50 | 25 | 0;
+  roi_progress_pct: number;
+  realized_multiple: string;
+  activation_threshold: string;
+  activation_threshold_reached: boolean;
+  remaining_to_cap: string;
+  remaining_to_next_stage: string;
+  distributions_count: number;
+  contributions_count: number;
+  latest_distribution_at: string | null;
+  latest_contribution_at: string | null;
+  tier: string;
+  status: string;
+}
+
+export interface EarlySupporterDistributionRow {
+  id: number;
+  amount: string;
+  description: string | null;
+  period_label: string | null;
+  created_at: string;
+}
+
+export interface EarlySupporterContributionRow {
+  id: number;
+  amount: string;
+  period_label: string | null;
+  notes: string | null;
+  created_at: string;
+}
+
+/** مقاييس مشاركة واحدة */
+export async function fetchEarlySupporterMetrics(id: number): Promise<EarlySupporterMetrics | null> {
+  const res = await fetchEarlySupporterParticipation(id) as any;
+  return res?.metrics ?? null;
+}
+
+/** سجل التوزيعات المستلمة */
+export async function fetchEarlySupporterDistributions(id: number): Promise<EarlySupporterDistributionRow[]> {
+  const res = await request<{ rows: EarlySupporterDistributionRow[] }>(
+    `/investor/early-supporter/my-participations/${id}/distributions`
+  );
+  return res?.rows ?? [];
+}
+
+/** سجل المساهمات الشهرية */
+export async function fetchEarlySupporterContributions(id: number): Promise<EarlySupporterContributionRow[]> {
+  const res = await request<{ rows: EarlySupporterContributionRow[] }>(
+    `/investor/early-supporter/my-participations/${id}/contributions`
+  );
+  return res?.rows ?? [];
+}
+
 /** التوقيع على عقد برنامج الدعم المبكر */
 export async function signEarlySupporterContract(
   id: number,

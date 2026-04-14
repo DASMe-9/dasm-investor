@@ -4,7 +4,6 @@ import { fetchEarlySupporterParticipations } from "../lib/api";
 import type { EarlySupporterParticipation } from "../lib/api";
 import {
   Heart,
-  FileText,
   CheckCircle2,
   Clock,
   Zap,
@@ -13,7 +12,7 @@ import {
   Loader2,
   AlertTriangle,
   PenLine,
-  ChevronLeft,
+  BarChart3,
 } from "lucide-react";
 
 // ─── Status helpers ───────────────────────────────────────────────────────────
@@ -112,32 +111,29 @@ function ParticipationCard({ p }: { p: EarlySupporterParticipation }) {
         </div>
       )}
 
-      {/* CTA */}
-      <Link href={`/early-supporter/${p.id}/contract`}>
-        <button
-          className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200"
-          style={{
-            backgroundColor: p.can_sign ? accentBg : "rgba(255,255,255,0.04)",
-            border: p.can_sign ? `1px solid ${accentBorder}` : "1px solid rgba(255,255,255,0.07)",
-            color: p.can_sign ? accentColor : "rgba(255,255,255,0.4)",
-          }}
-        >
-          <span className="flex items-center gap-2">
-            {p.can_sign ? (
-              <>
-                <PenLine className="w-4 h-4" />
-                توقيع العقد الإلكتروني
-              </>
-            ) : (
-              <>
-                <FileText className="w-4 h-4" />
-                عرض العقد
-              </>
-            )}
-          </span>
-          <ChevronLeft className="w-4 h-4" />
-        </button>
-      </Link>
+      {/* CTAs */}
+      <div className="flex gap-2">
+        <Link href={`/early-supporter/${p.id}`} className="flex-1">
+          <button
+            className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-bold transition-all duration-200"
+            style={{ backgroundColor: accentBg, border: `1px solid ${accentBorder}`, color: accentColor }}
+          >
+            <BarChart3 className="w-4 h-4" />
+            الداشبورد
+          </button>
+        </Link>
+        {p.can_sign && (
+          <Link href={`/early-supporter/${p.id}/contract`}>
+            <button
+              className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-sm font-bold transition-all duration-200"
+              style={{ backgroundColor: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.2)", color: "#f59e0b" }}
+            >
+              <PenLine className="w-4 h-4" />
+              وقّع
+            </button>
+          </Link>
+        )}
+      </div>
     </div>
   );
 }
