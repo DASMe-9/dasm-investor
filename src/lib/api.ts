@@ -127,3 +127,73 @@ export async function fetchDistributions(id: number): Promise<Distribution[] | n
 export async function fetchLedger(id: number): Promise<any> {
   return request(`/investor/angel-investments/${id}/ledger`);
 }
+
+// =====================================================================
+// ═══ Early Supporter Program — برنامج أصدقاء الدعم المبكر ═══════════
+// =====================================================================
+
+export interface EarlySupporterParticipation {
+  id: number;
+  participation_code: string;
+  tier: "small" | "large";
+  tier_label: string;
+  monthly_commitment: string;
+  status: string;
+  status_label: string;
+  signed_at: string | null;
+  activated_at: string | null;
+  created_at: string | null;
+  can_sign: boolean;
+  contract: {
+    id: number;
+    contract_number: string;
+    title: string;
+    version: number;
+  } | null;
+  signature: {
+    accepted_at: string;
+    signer_name: string;
+  } | null;
+}
+
+export interface EarlySupporterContractData {
+  participation_code: string;
+  contract_number: string;
+  contract_version: number;
+  tier: string;
+  tier_label: string;
+  status: string;
+  status_label: string;
+  rendered_body: string;
+  risk_block: string;
+  can_sign: boolean;
+}
+
+/** قائمة مشاركات المستخدم في برنامج أصدقاء الدعم المبكر */
+export async function fetchEarlySupporterParticipations(): Promise<{
+  is_early_supporter: boolean;
+  participations: EarlySupporterParticipation[];
+} | null> {
+  return request("/investor/early-supporter/my-participations");
+}
+
+/** تفاصيل مشاركة واحدة */
+export async function fetchEarlySupporterParticipation(id: number): Promise<EarlySupporterParticipation | null> {
+  return request(`/investor/early-supporter/my-participations/${id}`);
+}
+
+/** نص العقد المُصيَّر */
+export async function fetchEarlySupporterContract(id: number): Promise<EarlySupporterContractData | null> {
+  return request(`/investor/early-supporter/my-participations/${id}/contract`);
+}
+
+/** التوقيع على عقد برنامج الدعم المبكر */
+export async function signEarlySupporterContract(
+  id: number,
+  consents: { read_confirmed: boolean; accept_risk_disclosure: boolean; consent_electronic: boolean }
+): Promise<any> {
+  return request(`/investor/early-supporter/my-participations/${id}/sign`, {
+    method: "POST",
+    body: JSON.stringify(consents),
+  });
+}

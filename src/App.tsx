@@ -5,6 +5,8 @@ import { fetchSubscriptions } from "./lib/api";
 import Dashboard from "./pages/Dashboard";
 import Portfolio from "./pages/Portfolio";
 import Contract from "./pages/Contract";
+import EarlySupporter from "./pages/EarlySupporter";
+import EarlySupporterContract from "./pages/EarlySupporterContract";
 import NotFound from "./pages/NotFound";
 import Layout from "./components/Layout";
 import { ShieldX, LogOut } from "lucide-react";
@@ -103,8 +105,8 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    // مستثمر ملائكي — is_angel_investor flag (أي نوع حساب)
-    if (user?.is_angel_investor) {
+    // مستثمر ملائكي أو صديق دعم مبكر — is_angel_investor / is_early_supporter flag
+    if (user?.is_angel_investor || user?.is_early_supporter) {
       setStatus("authorized");
       return;
     }
@@ -159,6 +161,8 @@ export default function App() {
               <Route path="/" component={Dashboard} />
               <Route path="/portfolio" component={Portfolio} />
               <Route path="/contract/:id" component={Contract} />
+              <Route path="/early-supporter" component={EarlySupporter} />
+              <Route path="/early-supporter/:id/contract" component={EarlySupporterContract} />
               <Route component={NotFound} />
             </Switch>
           </Layout>

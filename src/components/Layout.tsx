@@ -1,10 +1,11 @@
 import { useLocation, Link } from "wouter";
 import { getUser, clearAuth } from "../lib/auth";
-import { BarChart3, Briefcase, LogOut, ExternalLink, Diamond } from "lucide-react";
+import { BarChart3, Briefcase, LogOut, ExternalLink, Diamond, Heart } from "lucide-react";
 
 const nav = [
   { name: "نظرة عامة", href: "/", icon: BarChart3 },
   { name: "محفظتي", href: "/portfolio", icon: Briefcase },
+  { name: "أصدقاء الدعم المبكر", href: "/early-supporter", icon: Heart },
 ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {
