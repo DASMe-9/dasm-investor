@@ -10,6 +10,7 @@ import EarlySupporterContract from "./pages/EarlySupporterContract";
 import EarlySupporterDashboard from "./pages/EarlySupporterDashboard";
 import NotFound from "./pages/NotFound";
 import Layout from "./components/Layout";
+import TalkGlobalContext from "./components/TalkGlobalContext";
 import { ShieldX, LogOut } from "lucide-react";
 
 function AuthCallback() {
@@ -153,7 +154,9 @@ export default function App() {
   }, []);
 
   return (
-    <Switch>
+    <>
+      <TalkGlobalContext />
+      <Switch>
       <Route path="/auth/callback" component={AuthCallback} />
       <Route>
         <AuthGuard>
@@ -171,5 +174,6 @@ export default function App() {
         </AuthGuard>
       </Route>
     </Switch>
+    </>
   );
 }
