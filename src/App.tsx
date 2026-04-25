@@ -1,4 +1,4 @@
-import { Route, Switch, useLocation } from "wouter";
+import { Route, Switch, useLocation, Redirect } from "wouter";
 import { useEffect, useState } from "react";
 import { setToken, setUser, verifySSOToken, redirectToSSO, isLoggedIn, clearAuth, getUser } from "./lib/auth";
 import LoginPage from "./pages/LoginPage";
@@ -286,25 +286,10 @@ function InvestorGate() {
 //  AuthGuard
 // ─────────────────────────────────────────────────────────────────────────────
 function AuthGuard({ children }: { children: React.ReactNode }) {
-  const [status, setStatus] = useState<"loading" | "authorized" | "denied">("loading");
-  const [, setLocation] = useLocation();
-
-  useEffect(() => {
-    if (!isLoggedIn()) {
-      setLocation("/login");
-      return;
-    }
-
-    const user = getUser();
-    if (isAuthorized(user)) {
-      setStatus("authorized");
-    } else {
-      setStatus("denied");
-    }
-  }, [setLocation]);
-
-  if (status === "loading") return <InvestorGate />;
-  if (status === "denied") return <AccessDenied />;
+  // localStorage reads are synchronous — no loading state needed
+  if (!isLoggedIn()) return <Redirect to="/login" />;
+  const user = getUser();
+  if (!isAuthorized(user)) return <AccessDenied />;
   return <>{children}</>;
 }
 
