@@ -46,6 +46,24 @@ export function redirectToSSO(): void {
   window.location.href = `${SSO_BASE}/auth/sso?platform=investor&return_url=${encodeURIComponent(returnUrl)}`;
 }
 
+export async function loginDirect(email: string, password: string): Promise<{ token: string; user: any }> {
+  const res = await fetch(`${BASE}/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw Object.assign(new Error(body?.message ?? "تعذّر تسجيل الدخول"), { response: { status: res.status, data: body } });
+  }
+  const token = body.data?.access_token ?? body.access_token;
+  const user  = body.data?.user ?? body.user;
+  if (!token || !user) throw new Error("استجابة غير متوقعة من الخادم");
+  localStorage.setItem(TOKEN_KEY, token);
+  localStorage.setItem(USER_KEY, JSON.stringify(user));
+  return { token, user };
+}
+
 /**
  * Verify SSO token with backend
  */

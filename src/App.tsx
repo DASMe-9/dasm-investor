@@ -1,6 +1,7 @@
 import { Route, Switch, useLocation } from "wouter";
 import { useEffect, useState } from "react";
 import { setToken, setUser, verifySSOToken, redirectToSSO, isLoggedIn, clearAuth, getUser } from "./lib/auth";
+import LoginPage from "./pages/LoginPage";
 import Dashboard from "./pages/Dashboard";
 import Portfolio from "./pages/Portfolio";
 import Contract from "./pages/Contract";
@@ -286,10 +287,11 @@ function InvestorGate() {
 // ─────────────────────────────────────────────────────────────────────────────
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const [status, setStatus] = useState<"loading" | "authorized" | "denied">("loading");
+  const [, setLocation] = useLocation();
 
   useEffect(() => {
     if (!isLoggedIn()) {
-      redirectToSSO();
+      setLocation("/login");
       return;
     }
 
@@ -299,7 +301,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
     } else {
       setStatus("denied");
     }
-  }, []);
+  }, [setLocation]);
 
   if (status === "loading") return <InvestorGate />;
   if (status === "denied") return <AccessDenied />;
@@ -313,7 +315,7 @@ export default function App() {
   useEffect(() => {
     const handleExpired = () => {
       clearAuth();
-      redirectToSSO();
+      window.location.href = "/login";
     };
     window.addEventListener("auth:expired", handleExpired);
     return () => window.removeEventListener("auth:expired", handleExpired);
@@ -323,6 +325,10 @@ export default function App() {
     <>
       <TalkGlobalContext />
       <Switch>
+        {/* صفحة الدخول المستقلة */}
+        <Route path="/login" component={LoginPage} />
+
+        {/* SSO callback (موروث) */}
         <Route path="/auth/callback" component={AuthCallback} />
         <Route>
           <AuthGuard>
